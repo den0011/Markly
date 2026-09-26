@@ -1,0 +1,99 @@
+/* Qt's rich text engine understands only a subset of CSS 2.1: no flexbox, no
+   pseudo-elements, no border-radius. Keep declarations to colors, fonts,
+   margins and simple borders. */
+
+body {
+    color: #24292f;
+    background-color: #ffffff;
+    font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #1f2328;
+    font-weight: bold;
+    margin-top: 22px;
+    margin-bottom: 10px;
+}
+
+h1 { font-size: 26px; }
+h2 { font-size: 21px; }
+h3 { font-size: 18px; }
+h4 { font-size: 16px; }
+h5 { font-size: 14px; }
+h6 { font-size: 14px; color: #59636e; }
+
+p {
+    margin-top: 0px;
+    margin-bottom: 12px;
+    line-height: 150%;
+}
+
+a {
+    color: #0969da;
+    text-decoration: none;
+}
+
+code {
+    font-family: "Consolas", "Courier New", monospace;
+    background-color: #eff1f3;
+    color: #b31d28;
+}
+
+pre {
+    font-family: "Consolas", "Courier New", monospace;
+    background-color: #f6f8fa;
+    color: #24292f;
+    border: 1px solid #d0d7de;
+    padding: 10px;
+    margin-top: 4px;
+    margin-bottom: 14px;
+}
+
+pre code {
+    background-color: #f6f8fa;
+    color: #24292f;
+}
+
+blockquote {
+    color: #59636e;
+    background-color: #f6f8fa;
+    margin-left: 12px;
+    margin-right: 0px;
+    padding-left: 12px;
+}
+
+ul, ol {
+    margin-top: 0px;
+    margin-bottom: 12px;
+    -qt-list-indent: 1;
+}
+
+li {
+    margin-bottom: 4px;
+}
+
+table {
+    border-color: #d0d7de;
+    background-color: #ffffff;
+    margin-top: 6px;
+    margin-bottom: 14px;
+}
+
+th {
+    background-color: #f6f8fa;
+    color: #1f2328;
+    font-weight: bold;
+}
+
+td {
+    color: #24292f;
+}
+
+hr {
+    color: #d0d7de;
+}
+
+img {
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
