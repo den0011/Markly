@@ -54,3 +54,6 @@ compile_commands.json
 *creator.user*
 
 *_qmlcache.qrc
+
+# Installer build output (installer/build-installer.ps1)
+/installer/output/

@@ -107,6 +107,31 @@ make
 ./parser/release/parsertest      # and the other five
 ```
 
+### Windows installer
+
+`installer/` builds a setup program with [Inno Setup](https://jrsoftware.org/isinfo.php)
+(6 or later). It needs Qt's `windeployqt` and `mingw32-make` on `PATH`, or the Qt
+`bin` folder passed in:
+
+```powershell
+.\installer\build-installer.ps1 -QtBin E:\Qt\Qt5.13.0\5.13.0\mingw73_64\bin
+```
+
+The script builds Markly, gathers it with every Qt library and plugin it needs
+into `build\deploy`, and compiles `installer\Markly.iss` into
+`installer\output\Markly-Setup-<version>.exe`. The version is read from
+`src/main.cpp`. Pass `-SkipBuild` to reuse an existing `build\release\Markly.exe`.
+
+The installer is English and Russian, installs for the current user without
+administrator rights (the wizard also offers "for all users"), and has a
+*Open Markdown files with Markly* option, on by default. That option registers
+Markly for `.md`, `.markdown`, `.mdown` and `.mkd`: it appears under *Open with*
+and in *Settings → Default apps*, and becomes the default straight away for an
+extension nobody else owns. An extension that already has an owner keeps it.
+Windows 10 and 11 do not let an installer take a file type over, so the last page
+offers to open *Settings → Default apps*, where choosing Markly takes one click.
+Uninstalling removes everything it registered.
+
 ### Regenerating the application icon
 
 The icon is painted in code rather than kept as an opaque binary, so its shape
@@ -134,6 +159,7 @@ make
 | `src/translationmanager.cpp` | Loading and swapping translation catalogs |
 | `src/finddialog.cpp` | Non-modal find/replace bar |
 | `src/mainwindow.cpp` | Actions, file handling, settings, printing |
+| `installer/` | Inno Setup script and the script that builds the installer |
 | `tools/appicon/` | Generator for the application icon |
 
 ---
