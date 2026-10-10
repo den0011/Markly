@@ -77,9 +77,18 @@ void TestMarkdownParser::inlineFormatting_data()
     QTest::newRow("autolink")
         << "<https://qt.io>"
         << "<p><a href=\"https://qt.io\">https://qt.io</a></p>\n";
+    // A paragraph of nothing but pictures opts out of the stylesheet's 150% line
+    // height, which would otherwise leave half a picture of empty space below it.
     QTest::newRow("image")
         << "![alt](cat.png)"
-        << "<p><img src=\"cat.png\" alt=\"alt\" title=\"\" /></p>\n";
+        << "<p style=\"line-height: 100%\"><img src=\"cat.png\" alt=\"alt\" title=\"\" /></p>\n";
+    QTest::newRow("several images")
+        << "![a](a.png) ![b](b.png)"
+        << "<p style=\"line-height: 100%\"><img src=\"a.png\" alt=\"a\" title=\"\" /> "
+           "<img src=\"b.png\" alt=\"b\" title=\"\" /></p>\n";
+    QTest::newRow("image in text keeps the normal line height")
+        << "see ![alt](cat.png) here"
+        << "<p>see <img src=\"cat.png\" alt=\"alt\" title=\"\" /> here</p>\n";
     QTest::newRow("html escaped")
         << "a < b & c > d"
         << "<p>a &lt; b &amp; c &gt; d</p>\n";

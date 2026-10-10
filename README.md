@@ -14,6 +14,10 @@ the syntax highlighting and every toolbar icon are part of the source.
   Switch to editor-only or preview-only at any time.
 - **Live preview**, debounced so typing stays responsive on large documents, with
   scrolling synchronised between the two panes.
+- **Pictures** — PNG, JPEG, GIF and SVG, resolved relative to the document. A
+  picture wider than the pane is scaled to fit instead of being clipped, and SVG
+  is drawn by Markly itself, so it works in a build that ships no image-format
+  plugins.
 - **Editor niceties** — syntax highlighting, a line-number gutter, current-line
   highlight, and list continuation on Enter that understands numbered and task
   lists.
@@ -92,6 +96,7 @@ widget wiring are all covered.
 | `parser/` | Markdown to HTML conversion |
 | `snippets/` | The Markdown the insert dialogs generate |
 | `preview/` | Preview theme switching |
+| `images/` | Pictures in the preview: SVG, fitting to the pane |
 | `dialogs/` | Insert dialog wiring |
 | `gui/` | The window: file drops, toolbar wiring |
 
@@ -99,7 +104,7 @@ widget wiring are all covered.
 mkdir build-tests && cd build-tests
 qmake ../tests/tests.pro
 make
-./parser/release/parsertest      # and the other four
+./parser/release/parsertest      # and the other five
 ```
 
 ### Regenerating the application icon
@@ -211,6 +216,31 @@ live document, and every other cursor attached to that document — including th
 widget's own internal one — has its position adjusted automatically. That is
 what lets `replaceAll()` call `find()` again immediately after each replacement
 without manually re-synchronising the widget's cursor.
+
+## Pictures in the preview
+
+Left to itself, `QTextDocument` goes wrong with pictures in three ways, and
+`PreviewView::loadResource` is there to head each of them off:
+
+- **SVG depends on a plugin.** Qt reads SVG through the `qsvg` image-format
+  plugin, and `windeployqt` only ships that plugin for an application that uses
+  the Svg module. Without it every diagram turns into a small "missing file"
+  icon — silently, and only on a deployed copy: a build run from Qt Creator finds
+  the plugin in the Qt installation and looks fine. Markly links `QtSvg` and
+  renders SVG with `QSvgRenderer` itself.
+- **Wide pictures are clipped.** `QTextDocument` never scales an image to its
+  container. Pictures wider than the pane are scaled down when they are loaded,
+  so a resize that changes the fit re-sets the document (debounced, as for the
+  theme switch). The scroll bar's width is always reserved: otherwise a picture
+  tall enough to need the bar would narrow the pane, shrink, no longer need the
+  bar, widen again, and loop.
+- **The paragraph stylesheet pads them.** `p { line-height: 150% }` makes the
+  line that holds a picture 150% of its height, leaving half a picture of empty
+  space underneath. The parser marks a paragraph of nothing but pictures with
+  `line-height: 100%`.
+
+What Qt's SVG renderer does not draw — `marker` arrowheads using
+`orient="auto-start-reverse"` among them — is missing in the preview too.
 
 ## Dropping files onto the window
 

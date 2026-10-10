@@ -543,8 +543,19 @@ void MarkdownParser::parseParagraph(const QStringList &lines, int *i, int to, QS
     }
     *i = j;
 
-    if (!text.isEmpty())
-        *out += QStringLiteral("<p>%1</p>\n").arg(parseInline(text.join(QLatin1Char('\n'))));
+    if (text.isEmpty())
+        return;
+
+    const QString html = parseInline(text.join(QLatin1Char('\n')));
+
+    // The preview stylesheet gives paragraphs a 150% line height, and a line
+    // holding a picture is as tall as the picture, so a paragraph of nothing but
+    // pictures would be followed by half a picture of empty space.
+    static const QRegularExpression onlyImages(QStringLiteral("^(?:<img [^>]*/>\\s*)+$"));
+    if (onlyImages.match(html).hasMatch())
+        *out += QStringLiteral("<p style=\"line-height: 100%\">%1</p>\n").arg(html);
+    else
+        *out += QStringLiteral("<p>%1</p>\n").arg(html);
 }
 
 QString MarkdownParser::parseInline(const QString &text) const

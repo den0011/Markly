@@ -1,4 +1,4 @@
-QT += core gui widgets printsupport testlib
+QT += core gui widgets printsupport svg testlib
 
 TARGET   = guitest
 TEMPLATE = app
